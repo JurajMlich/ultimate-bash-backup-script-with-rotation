@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# source: https://github.com/JurajMlich/ultimate-bash-backup-script-with-rotation
+# author: Juraj Mlich <jurajmlich@gmail.com>
 # usage:
 # backup.sh /home/WHAT_TO_BACKUP /home/WHERE_TO_BACKUP 2x10h 10x5m 2dx4 1mx5
 # in the second directory, subdirectories will be made for each period + temp directory
