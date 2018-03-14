@@ -4,6 +4,34 @@
 # backup.sh /home/WHAT_TO_BACKUP /home/WHERE_TO_BACKUP 2x10h 10x5m 2dx4 1mx5
 # in the second directory, subdirectories will be made for each period + temp directory
 
+toExclude=()
+
+# --------------
+# PARSE PARAMS
+# --------------
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+	--exclude)
+	toExclude+=("--exclude=$2");
+	shift # past argument
+	shift # past value
+	;;
+	*)    # unknown option
+	POSITIONAL+=("$1") # save it in an array for later
+	shift # past argument
+	;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+# --------------
+
+# --------------
+# BASE CONFIG
+# -------------
 dirToBackup=$1
 backupDir=$2
 date=$(date '+%d-%m-%Y')
@@ -76,7 +104,9 @@ function backupTo() {
 		# completed (we check when the last backup was done by finding a backup file
 		# that was modified in less than x minutes)
 		log "Making backup of $dirToBackup to $to."
-		sudo tar -cpvzf "$tempDir/archive.tar.gz" "$dirToBackup/" > "$tempDir/tar.log"
+		cd $dirToBackup
+		
+		sudo tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" "." > "$tempDir/tar.log"
 		
 		if [ ! $? -eq 0  ]
 		then
@@ -92,6 +122,7 @@ function backupTo() {
 		# move it to the right location
 		mv "$tempDir/archive.tar.gz" "$to"
 		backupFile="$to"
+
 	fi
 }
 
