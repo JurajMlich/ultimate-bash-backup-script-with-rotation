@@ -8,8 +8,7 @@ dirToBackup=$1
 backupDir=$2
 date=$(date '+%d-%m-%Y')
 hour=$(date '+%H:%M:%S')
-
-#logFile=INSERT_PATH_TO_LOG_FILE
+logFile=/home/juraj/Data/log/backup.log
 
 function log(){
 	echo "$1"
@@ -78,6 +77,13 @@ function backupTo() {
 		# that was modified in less than x minutes)
 		log "Making backup of $dirToBackup to $to."
 		sudo tar -cpvzf "$tempDir/archive.tar.gz" "$dirToBackup/" > "$tempDir/tar.log"
+		
+		if [ ! $? -eq 0  ]
+		then
+			log "Error during compressing backup. Error code: $?";
+			exit $?;
+		fi
+		
 		# remove the temp file that can be used to watch progress
 		rm "$tempDir/tar.log"
 		# since we run is as sudo, we need to modify the owner
