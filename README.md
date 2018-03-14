@@ -28,7 +28,7 @@ Example: `backup.sh DIRECTORY_TO_BACKUP DIRECTORY_TO_STORE_BACKUP_IN 10x5 7x2h 5
  Set logDir variable in the script to the file you want log messages to be written in.
  
  ## Exluding dirs
- You may exclude files by applying --exclude xxx options, where xxx is **relative path from the directory you are backuping**. 
+ You may exclude files and dirs by applying --exclude xxx options, where xxx is **relative path from the directory you are backuping**. 
  
  ## Cron example
  `*/5 * * * * ~/Data/bin/backup.sh ~/.local/nottelo /media/backups/nottelo 10x1h 7x1d 3x1m`<br>
