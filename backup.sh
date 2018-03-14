@@ -118,7 +118,7 @@ function backupTo() {
 		
 		# remove the temp file that can be used to watch progress
 		rm "$tempDir/tar.log"
-		# since we run is as sudo, we need to modify the owner
+		# since we run as sudo, we need to modify the owner
 		local user=$(whoami)
 		sudo chown $user.$user "$tempDir/archive.tar.gz"
 		# move it to the right location
