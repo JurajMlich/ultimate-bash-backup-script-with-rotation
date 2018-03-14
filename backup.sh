@@ -8,7 +8,8 @@ dirToBackup=$1
 backupDir=$2
 date=$(date '+%d-%m-%Y')
 hour=$(date '+%H:%M:%S')
-logFile=/home/juraj/Data/log/backup.log
+
+#logFile=INSERT_PATH_TO_LOG_FILE
 
 function log(){
 	echo "$1"
