@@ -34,11 +34,12 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 # --------------
 # BASE CONFIG
 # -------------
-dirToBackup=$1
-backupDir=$2
+dirToBackup=$(readlink -f $1)
+backupDir=$(readlink -f $2)
 date=$(date '+%d-%m-%Y')
 hour=$(date '+%H:%M:%S')
-logFile=/home/juraj/Data/log/backup.log
+
+#logFile=/home/juraj/Data/log/backup.log # absolute path
 
 function log(){
 	echo "$1"
@@ -106,11 +107,9 @@ function backupTo() {
 		# completed (we check when the last backup was done by finding a backup file
 		# that was modified in less than x minutes)
 		log "Making backup of $dirToBackup to $to."
-		cd $dirToBackup
+		sudo tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" -C "$dirToBackup" . > "$tempDir/tar.log"
 		
-		sudo tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" "." > "$tempDir/tar.log"
-		
-		if [ ! $? -eq 0  ]
+		if [ ! $? == "0"  ]
 		then
 			log "Error during compressing backup. Error code: $?";
 			exit $?;
@@ -172,17 +171,18 @@ do
 		# if the backup exists, process to the next backup period
 		if [[ $created -gt 0 ]]
 		then
-			continue
+			echo ""
+			#continue
 		fi
 	fi
 
 	# remove old backups	
-	count=$(ls "$path" -afq | wc -l)
-	if [ $count -gt $toKeepAmount ]
+	count=$(ls "$path" -Aq | wc -l)
+
+	if [ $count -gt $((toKeepAmount - 1)) ]
 	then
 		log "Removing old backups from $path."
-		cd $path
-		ls $path -t -1 | tail -n -$(($count - $toKeepAmount - 1)) | xargs -d '\n' rm -rf
+		ls $path -t -1 | tail -n -$(($count - $toKeepAmount + 1)) | xargs printf -- "$path/%s\n" | xargs -d '\n' rm -rf
 	fi
 
 	# make new backup
