@@ -140,14 +140,13 @@ do
 	intervalNumeric=$(echo "$interval" | tr -dc '0-9')
 	# path where to store the backup
 	path=$backupDir/$period
+	backupName="$date.tar.gz"
 	
 	if [[ $interval == *"h" ]]
 	then
 		backupName="$date $hour.tar.gz"
 		intervalInMins=$(($intervalNumeric * 60))
 	else
-		backupName="$date.tar.gz"
-		
 		if [[ $interval == *"d" ]]
 		then
 			intervalInMins=$(($intervalNumeric * 60 * 24))
@@ -155,6 +154,7 @@ do
 		then
 			intervalInMins=$(($intervalNumeric * 60 * 24 * 30))
 		else
+			backupName="$date $hour.tar.gz"
 			intervalInMins=$intervalNumeric
 		fi
 	fi
