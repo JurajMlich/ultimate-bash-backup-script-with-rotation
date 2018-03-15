@@ -36,9 +36,10 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 # -------------
 dirToBackup=$(readlink -f $1)
 backupDir=$(readlink -f $2)
-date=$(date '+%d-%m-%Y')
-hour=$(date '+%H:%M:%S')
-# logFile=/home/juraj/Data/log/backup.log # absolute path
+date=$(date '+%Y-%m-%d')
+hour=$(date '+%H-%M-%S')
+
+#logFile=/home/juraj/Data/log/backup.log # absolute path
 
 function log(){
 	echo "$1"
@@ -106,19 +107,18 @@ function backupTo() {
 		# completed (we check when the last backup was done by finding a backup file
 		# that was modified in less than x minutes)
 		log "Making backup of $dirToBackup to $to."
-		sudo tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" -C "$dirToBackup" . > "$tempDir/tar.log"
+		tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" -C "$dirToBackup" . > "$tempDir/tar.log"
 		
-		if [ ! $? -eq 0  ]
+		code=$?
+		
+		if [ ! $code -eq 0  ]
 		then
-			log "Error during compressing backup. Error code: $?";
-			exit $?;
+			log "Error during compressing backup. Error code: $code";
+			exit $code
 		fi
 		
 		# remove the temp file that can be used to watch progress
 		rm "$tempDir/tar.log"
-		# since we run as sudo, we need to modify the owner
-		local user=$(whoami)
-		sudo chown $user.$user "$tempDir/archive.tar.gz"
 		# move it to the right location
 		mv "$tempDir/archive.tar.gz" "$to"
 		backupFile="$to"
