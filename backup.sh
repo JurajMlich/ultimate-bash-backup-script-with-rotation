@@ -38,8 +38,7 @@ dirToBackup=$(readlink -f $1)
 backupDir=$(readlink -f $2)
 date=$(date '+%d-%m-%Y')
 hour=$(date '+%H:%M:%S')
-
-#logFile=/home/juraj/Data/log/backup.log # absolute path
+# logFile=/home/juraj/Data/log/backup.log # absolute path
 
 function log(){
 	echo "$1"
@@ -109,7 +108,7 @@ function backupTo() {
 		log "Making backup of $dirToBackup to $to."
 		sudo tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" -C "$dirToBackup" . > "$tempDir/tar.log"
 		
-		if [ ! $? == "0"  ]
+		if [ ! $? -eq 0  ]
 		then
 			log "Error during compressing backup. Error code: $?";
 			exit $?;
@@ -171,8 +170,7 @@ do
 		# if the backup exists, process to the next backup period
 		if [[ $created -gt 0 ]]
 		then
-			echo ""
-			#continue
+			continue
 		fi
 	fi
 
