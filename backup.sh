@@ -111,7 +111,8 @@ function backupTo() {
 		
 		code=$?
 		
-		if [ ! $code -eq 0  ]
+		# 1 is thrown if some files were changed as they were being comprimed
+		if [ ! $code -eq 0 ] && [ ! $code -eq 1]
 		then
 			log "Error during compressing backup. Error code: $code";
 			exit $code
