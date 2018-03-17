@@ -171,8 +171,7 @@ do
 		# if the backup exists, process to the next backup period
 		if [[ $created -gt 0 ]]
 		then
-			echo "";
-			#continue;
+			continue;
 		fi
 	fi
 
