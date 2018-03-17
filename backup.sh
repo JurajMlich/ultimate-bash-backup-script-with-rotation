@@ -34,8 +34,8 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 # --------------
 # BASE CONFIG
 # -------------
-dirToBackup=$(readlink -f $1)
-backupDir=$(readlink -f $2)
+dirToBackup=$(readlink -f "$1")
+backupDir=$(readlink -f "$2")
 date=$(date '+%Y-%m-%d')
 hour=$(date '+%H-%M-%S')
 
