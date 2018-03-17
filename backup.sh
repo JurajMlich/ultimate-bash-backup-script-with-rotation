@@ -171,7 +171,8 @@ do
 		# if the backup exists, process to the next backup period
 		if [[ $created -gt 0 ]]
 		then
-			continue
+			echo "";
+			#continue;
 		fi
 	fi
 
@@ -181,7 +182,12 @@ do
 	if [ $count -gt $((toKeepAmount - 1)) ]
 	then
 		log "Removing old backups from $path."
-		ls "$path" -t -1 | tail -n -$(($count - $toKeepAmount + 1)) | xargs printf -- "$path/%s\n" | xargs -d '\n' rm -rf
+		toRemoveFileNames=$(ls "$path" -t -1 | tail -n -$(($count - $toKeepAmount + 1)));
+		
+		while read -r line; do
+			log "Removing $path/$line"				
+    			rm -rf "$path/$line"
+		done <<< "$toRemoveFileNames"	
 	fi
 
 	# make new backup
