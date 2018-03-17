@@ -44,13 +44,13 @@ hour=$(date '+%H-%M-%S')
 function log(){
 	echo "$1"
 
-	if [ ! -z $logFile ]
+	if [ ! -z "$logFile" ]
 	then
-		echo "$(date "+%Y-%m-%d %H:%M:%S") - $1" >> $logFile	
+		echo "$(date "+%Y-%m-%d %H:%M:%S") - $1" >> "$logFile"	
 	fi
 }
 
-if [ ! -d $backupDir ]
+if [ ! -d "$backupDir" ]
 then
 	log "The backup directory unavailable."
 	exit 1
@@ -60,7 +60,7 @@ fi;
 tempDir="$backupDir/temp"
  
 # create or purge tempDir
-[ ! -d $tempDir ] && mkdir $tempDir
+[ ! -d "$tempDir" ] && mkdir "$tempDir"
 
 # LOCKING
 # ----------------------------------
@@ -139,7 +139,7 @@ do
 	# numeric part of interval (e.g. 2)	
 	intervalNumeric=$(echo "$interval" | tr -dc '0-9')
 	# path where to store the backup
-	path=$backupDir/$period
+	path="$backupDir/$period"
 	backupName="$date.tar.gz"
 	
 	if [[ $interval == *"h" ]]
@@ -166,7 +166,7 @@ do
 		# the backup obviously does not exist
 		mkdir "$path";
 	else
-		created=$(find $path -maxdepth 1 -mmin -$((intervalInMins)) -type f | wc -l)
+		created=$(find "$path" -maxdepth 1 -mmin -$((intervalInMins)) -type f | wc -l)
 
 		# if the backup exists, process to the next backup period
 		if [[ $created -gt 0 ]]
@@ -181,11 +181,11 @@ do
 	if [ $count -gt $((toKeepAmount - 1)) ]
 	then
 		log "Removing old backups from $path."
-		ls $path -t -1 | tail -n -$(($count - $toKeepAmount + 1)) | xargs printf -- "$path/%s\n" | xargs -d '\n' rm -rf
+		ls "$path" -t -1 | tail -n -$(($count - $toKeepAmount + 1)) | xargs printf -- "$path/%s\n" | xargs -d '\n' rm -rf
 	fi
 
 	# make new backup
 	backupTo "$path/$backupName"
 done
 
-rm -rf $tempDir
+rm -rf "$tempDir"
