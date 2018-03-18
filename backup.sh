@@ -52,7 +52,7 @@ function log(){
 
 if [ ! -d "$backupDir" ]
 then
-	log "The backup directory unavailable."
+	log "The backup directory \`$backupDir\` unavailable."
 	exit 1
 fi;
 
@@ -84,7 +84,7 @@ unlock()            { _lock u; }   # drop a lock
 # Avoid running more instances of the script
 if ! exlock_now
 then
-	log "The script is already executing."
+	echo "The script is already executing."
 	exit 1
 fi
 # --------------------------------------
@@ -93,20 +93,20 @@ rm -rf "$tempDir/*"
 
 function backupTo() {
 	local to="$1"
+	log "Making backup of \`$dirToBackup\` to \`$to\`."
+	SECONDS=0
 	
 	# since we do not want to compress the backup more times than needed
 	# we store the path to already comprimed archive in the $backupFile variable
 	# and in case it is available, we only copy the file
 	if [ ! -z "$backupFile" ]
 	then
-		log "Duplicating the already made backup to $to."
 		cp "$backupFile" "$to"
 	else	
 		# make the archive in temp directory so that if the script is cancelled in
 		# the middle, the next execution of script does not think that the backup was
 		# completed (we check when the last backup was done by finding a backup file
 		# that was modified in less than x minutes)
-		log "Making backup of $dirToBackup to $to."
 		tar -cpvzf "$tempDir/archive.tar.gz" "${toExclude[@]}" -C "$dirToBackup" . > "$tempDir/tar.log"
 		
 		code=$?
@@ -123,7 +123,7 @@ function backupTo() {
 		# move it to the right location
 		mv "$tempDir/archive.tar.gz" "$to"
 		backupFile="$to"
-
+		log "Backup of \`$dirToBackup\` has been saved to \`$to\`. Took $(($SECONDS / 60))m and $(($SECONDS % 60))s."
 	fi
 }
 
@@ -180,7 +180,6 @@ do
 
 	if [ $count -gt $((toKeepAmount - 1)) ]
 	then
-		log "Removing old backups from $path."
 		toRemoveFileNames=$(ls "$path" -t -1 | tail -n -$(($count - $toKeepAmount + 1)));
 		
 		while read -r line; do
