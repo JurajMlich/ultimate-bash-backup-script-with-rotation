@@ -166,7 +166,7 @@ do
 		# the backup obviously does not exist
 		mkdir "$path";
 	else
-		created=$(find "$path" -maxdepth 1 -mmin -$((intervalInMins)) -type f | wc -l)
+		created=$(find "$path" -maxdepth 1 -mmin -$((intervalInMins - 1)) -type f | wc -l)
 
 		# if the backup exists, process to the next backup period
 		if [[ $created -gt 0 ]]
