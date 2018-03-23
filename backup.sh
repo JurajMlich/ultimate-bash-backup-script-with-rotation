@@ -39,7 +39,7 @@ backupDir=$(readlink -f "$2")
 date=$(date '+%Y-%m-%d')
 hour=$(date '+%H-%M-%S')
 
-#logFile=/home/juraj/Data/log/backup.log # absolute path
+# logFile=/home/juraj/Data/log/backup.log # absolute path
 
 function log(){
 	echo "$1"
@@ -50,7 +50,13 @@ function log(){
 	fi
 }
 
-if [ ! -d "$backupDir" ]
+# log rotating
+if [[ ! -z "$logFile" ]] && [[ -f "$logFile" ]] && [[ $(wc -l < "$logFile") -gt 300 ]]
+then
+	echo "$(tail -n 300 "$logFile")" > "$logFile"
+fi
+
+if [[ ! -d "$backupDir" ]]
 then
 	log "The backup directory \`$backupDir\` unavailable."
 	exit 1
@@ -60,7 +66,7 @@ fi;
 tempDir="$backupDir/temp"
  
 # create or purge tempDir
-[ ! -d "$tempDir" ] && mkdir "$tempDir"
+[[ ! -d "$tempDir" ]] && mkdir "$tempDir"
 
 # LOCKING
 # ----------------------------------
@@ -99,7 +105,7 @@ function backupTo() {
 	# since we do not want to compress the backup more times than needed
 	# we store the path to already comprimed archive in the $backupFile variable
 	# and in case it is available, we only copy the file
-	if [ ! -z "$backupFile" ]
+	if [[ ! -z "$backupFile" ]]
 	then
 		cp "$backupFile" "$to"
 	else	
@@ -112,7 +118,7 @@ function backupTo() {
 		code=$?
 		
 		# 1 is thrown if some files were changed as they were being comprimed
-		if [ ! $code -eq 0 ] && [ ! $code -eq 1]
+		if [[ ! $code -eq 0 ]] && [[ ! $code -eq 1]]
 		then
 			log "Error during compressing backup. Error code: $code";
 			exit $code
@@ -160,7 +166,7 @@ do
 	fi
 
 	# check if backup is not already done and do not continue if it is 
-	if [ ! -d "$path" ] 	
+	if [[ ! -d "$path" ]]
 	then
 		# if the directory does not exist, let the flow continue as the 
 		# the backup obviously does not exist
@@ -178,7 +184,7 @@ do
 	# remove old backups	
 	count=$(ls "$path" -Aq | wc -l)
 
-	if [ $count -gt $((toKeepAmount - 1)) ]
+	if [[ $count -gt $((toKeepAmount - 1)) ]]
 	then
 		toRemoveFileNames=$(ls "$path" -t -1 | tail -n -$(($count - $toKeepAmount + 1)));
 		
