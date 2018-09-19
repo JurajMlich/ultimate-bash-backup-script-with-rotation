@@ -1,5 +1,5 @@
 # Bash backup script supporting rotation
-After looking around the whole internet, I had not found a script that would have been general enough and would have worked exactly as I want. So I have learned Bash and here is the result. Feel free to correct my mistakes, if any. Script was carefully tested. 
+After lquite a lot of time doing research, I had not found a script that would have been general enough and would have worked exactly as I want without being far too complex. So I have learned Bash and here is the result. Feel free to correct my mistakes, if any. Script was carefully tested. 
 
 ## Features
 - configuration of more backup intervals
