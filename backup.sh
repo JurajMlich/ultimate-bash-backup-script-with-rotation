@@ -156,6 +156,9 @@ do
 		if [[ $interval == *"d" ]]
 		then
 			intervalInMins=$(($intervalNumeric * 60 * 24))
+		elif [[ $interval == *"w" ]]
+		then
+			intervalInMins=$(($intervalNumeric * 60 * 24 * 7))
 		elif [[ $interval == *"m" ]]
 		then
 			intervalInMins=$(($intervalNumeric * 60 * 24 * 30))
